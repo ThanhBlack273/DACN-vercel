@@ -46,7 +46,7 @@ mongoClient.connect(url, (err, db) =>{
     }else {
       // Đăng ký
       app.get('/', (req,res) =>{
-        res.status(200).send("Hello")
+        res.status(200).send("Hello vercel")
       })
 
       app.post('/signup', (req,res) =>{
