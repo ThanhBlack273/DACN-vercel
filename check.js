@@ -21,6 +21,11 @@ mongoClient.connect(url, (err, db) =>{
     if (err) {
       console.log("Error while connecting mongo client")
     }else {
+
+      app.post('/', (req,res) =>{
+        console.log(`<p>HELLOTHEEE</p>`)
+        res.status(200).send('HELLO')
+      })
       // Đăng ký
       app.post('/signup', (req,res) =>{
         const myDb = db.db('database')
