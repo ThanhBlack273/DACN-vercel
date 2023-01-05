@@ -1,14 +1,15 @@
 const express = require('express');
-const { ObjectId } = require('mongodb');
 const app = express();
+
+const { ObjectId } = require('mongodb');
 const mongoClient = require('mongodb').MongoClient;
 const mongoose = require("mongoose");
+
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+
 const nodemailer = require("nodemailer");
-// const dontenv= require("dotenv")
-// dontenv.config();
-const { json } = require('express');
+//const { json } = require('express');
 const cloudinary= require("cloudinary").v2
 const multer = require("multer")
 const path = require("path");
@@ -32,23 +33,21 @@ const filestore= multer.diskStorage({
 })
 const upload= multer({ storage: filestore})
 
-//const PostModel = require("../Models/PostModel");
-//const router = express.Router();
-//const MyModel = require("../Models/MyModels");
+
 
 const url = "mongodb+srv://oenoen:oenoen@dacn.kxrrsop.mongodb.net/test"
 //const url ="mongodb+srv://admin:admin@cluster0.mxicf65.mongodb.net/da"
 app.use(express.json())
+
+app.get('/', (req,res) =>{
+  res.status(200).send("Hello vercel")
+})
 
 mongoClient.connect(url, (err, db) =>{
     if (err) {
       console.log("Error while connecting mongo client")
     }else {
       // Đăng ký
-      app.get('/', (req,res) =>{
-        res.status(200).send("Hello vercel")
-      })
-
       app.post('/signup', (req,res) =>{
         const myDb = db.db('test')
         const collection = myDb.collection('Users')
@@ -370,7 +369,7 @@ mongoClient.connect(url, (err, db) =>{
         
      })
 
-     app.post('/changeinfo2', upload.single('image'), async (req,res)=>{
+      app.post('/changeinfo2', upload.single('image'), async (req,res)=>{
       try{
         const myDb = db.db('test')
         const collection = myDb.collection('Users')
@@ -455,102 +454,103 @@ mongoClient.connect(url, (err, db) =>{
         throw(err)
       }
       
-    })
+     })
 
-      app.post('/search', async (req,res)=>{
-        const myDb = db.db('da')
-        const collection = myDb.collection(req.body.sub)   
-        var collection1, collection2
+      // app.post('/search', async (req,res)=>{
+      //   const myDb = db.db('da')
+      //   const collection = myDb.collection(req.body.sub)   
+      //   var collection1, collection2
              
-        if(req.body.sub=="English")
-        {
-          collection1 = myDb.collection('Eng_exam')
-          collection2 = myDb.collection('Eng_review')
-        }
-        else if(req.body.sub=="History")
-        {
-          collection1 = myDb.collection('His_exam')
-          collection2 = myDb.collection('His_review')
-        }
-        else if(req.body.sub=="Geography")
-        {
-          collection1 = myDb.collection('Geo_exam')
-          collection2 = myDb.collection('Geo_review')
-        }
-        else if(req.body.sub=="Gdcd")
-        {
-          collection1 = myDb.collection('Gdcd_exam')
-          collection2 = myDb.collection('Gdcd_review')
-        }   
+      //   if(req.body.sub=="English")
+      //   {
+      //     collection1 = myDb.collection('Eng_exam')
+      //     collection2 = myDb.collection('Eng_review')
+      //   }
+      //   else if(req.body.sub=="History")
+      //   {
+      //     collection1 = myDb.collection('His_exam')
+      //     collection2 = myDb.collection('His_review')
+      //   }
+      //   else if(req.body.sub=="Geography")
+      //   {
+      //     collection1 = myDb.collection('Geo_exam')
+      //     collection2 = myDb.collection('Geo_review')
+      //   }
+      //   else if(req.body.sub=="Gdcd")
+      //   {
+      //     collection1 = myDb.collection('Gdcd_exam')
+      //     collection2 = myDb.collection('Gdcd_review')
+      //   }   
 
-        var query = {
-          "$or":[
-            {Question:{ $regex: '.*' + req.body.search + '.*'}},
-            {a:{ $regex: '.*' + req.body.search + '.*'}},
-            {b:{ $regex: '.*' + req.body.search + '.*'}},
-            {c:{ $regex: '.*' + req.body.search + '.*'}},
-            {d:{ $regex: '.*' + req.body.search + '.*'}},
-          ]
-        }
-        collection.find(query).toArray(async function(err,result){
-          if (err) throw err;
-          else{
-            let obj = new Array()
-            //for( let i=0; i<result.length;i++ )
-            for( let i=0; i<1;i++ )
-            {
-              const send ={
-                Question: result[i].Question,
-                anw: result[i].anw
-              }
+      //   var query = {
+      //     "$or":[
+      //       {Question:{ $regex: '.*' + req.body.search + '.*'}},
+      //       {a:{ $regex: '.*' + req.body.search + '.*'}},
+      //       {b:{ $regex: '.*' + req.body.search + '.*'}},
+      //       {c:{ $regex: '.*' + req.body.search + '.*'}},
+      //       {d:{ $regex: '.*' + req.body.search + '.*'}},
+      //     ]
+      //   }
+      //   collection.find(query).toArray(async function(err,result){
+      //     if (err) throw err;
+      //     else{
+      //       let obj = new Array()
+      //       //for( let i=0; i<result.length;i++ )
+      //       for( let i=0; i<1;i++ )
+      //       {
+      //         const send ={
+      //           Question: result[i].Question,
+      //           anw: result[i].anw
+      //         }
 
-              const ques = {Questions: result[i]._id}
-              var result1 = await collection1.find(ques)
+      //         const ques = {Questions: result[i]._id}
+      //         var result1 = await collection1.find(ques)
               
-              if (result1!=null){
-                Object.assign(send,{Code: result1.Code, Sub: collection1.collectionName})
-                obj.push(send)
-              }
+      //         if (result1!=null){
+      //           Object.assign(send,{Code: result1.Code, Sub: collection1.collectionName})
+      //           obj.push(send)
+      //         }
 
-              var result2 = await collection2.find(ques)
-              if (result2!=null){
-                Object.assign(send,{Code: result2.Code, Sub: collection2.collectionName})
-                obj.push(send)
-              }
-            }    
-            res.status(200).send(obj)           
-          }
-        })
-      })
+      //         var result2 = await collection2.find(ques)
+      //         if (result2!=null){
+      //           Object.assign(send,{Code: result2.Code, Sub: collection2.collectionName})
+      //           obj.push(send)
+      //         }
+      //       }    
+      //       res.status(200).send(obj)           
+      //     }
+      //   })
+      // })
 
-      app.get('/searchid', async(req,res)=>{
-        const myDb = db.db('da')
-        collection = myDb.collection(req.body.sub)
-        const ques = {Questions :req.body.id}
+      // app.get('/searchid', async(req,res)=>{
+      //   const myDb = db.db('da')
+      //   collection = myDb.collection(req.body.sub)
+      //   const ques = {Questions :req.body.id}
 
-        console.log(ques)
-          collection.find(ques,{ projection: { _id: 0, Code: 1 } }).toArray(function(err, result) {
-          if (result!=null) {
-            console.log(result)
-            res.status(200).send(JSON.stringify(result))
-          } else {
-            res.status(404).send()
-            console.log("die")
-          }
-          })
+      //   console.log(ques)
+      //     collection.find(ques,{ projection: { _id: 0, Code: 1 } }).toArray(function(err, result) {
+      //     if (result!=null) {
+      //       console.log(result)
+      //       res.status(200).send(JSON.stringify(result))
+      //     } else {
+      //       res.status(404).send()
+      //       console.log("die")
+      //     }
+      //     })
         
-      })
-
-
-
+      // })
     }
 });
 
 
-const port = process.env.PORT || 3000
-app.listen(port, () => {
-  console.log("Listening on port: ",port)
-})
+// const port = process.env.PORT || 3000
+// app.listen(port, () => {
+//   console.log("Listening on port: ",port)
+// })
+
+app.listen(5000, () => {
+  console.log("Running on port 5000.");
+});
 
 module.exports = app;
 //NGUYEN LAM
