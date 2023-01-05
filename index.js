@@ -547,17 +547,12 @@ mongoClient.connect(url, (err, db) =>{
 });
 
 
-
-
-
-
-
 const port = process.env.PORT || 3000
 app.listen(port, () => {
   console.log("Listening on port: ",port)
 })
 
-
+module.exports = app;
 //NGUYEN LAM
 
 // const { Router } = require('express')
