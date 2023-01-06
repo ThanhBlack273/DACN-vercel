@@ -39,14 +39,16 @@ const url = "mongodb+srv://oenoen:oenoen@dacn.kxrrsop.mongodb.net/test"
 //const url ="mongodb+srv://admin:admin@cluster0.mxicf65.mongodb.net/da"
 app.use(express.json())
 
-app.get('/', (req,res) =>{
-  res.status(200).send("Hello vercel")
-})
+
 
 mongoClient.connect(url, (err, db) =>{
     if (err) {
       console.log("Error while connecting mongo client")
     }else {
+      app.get('/', (req,res) =>{
+        res.status(200).send("Hello vercel")
+      })
+
       // Đăng ký
       app.post('/signup', (req,res) =>{
         const myDb = db.db('test')
