@@ -41,7 +41,7 @@ app.use(express.json())
 
 
 
-await mongoClient.connect(url, (err, db) =>{
+mongoClient.connect(url, (err, db) =>{
     if (err) {
       console.log("Error while connecting mongo client")
     }else {
