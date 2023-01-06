@@ -2,14 +2,15 @@ const express = require('express');
 const app = express();
 
 const { ObjectId } = require('mongodb');
-const mongoClient = require('mongodb').MongoClient;
+//const mongoClient = require('mongodb').MongoClient;
+const { MongoClient, ServerApiVersion } = require('mongodb');
 const mongoose = require("mongoose");
 
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
 
 const nodemailer = require("nodemailer");
-//const { json } = require('express');
+const { json } = require('express');
 const cloudinary= require("cloudinary").v2
 const multer = require("multer")
 const path = require("path");
@@ -35,13 +36,16 @@ const upload= multer({ storage: filestore})
 
 
 
-const url = "mongodb+srv://vercel-admin-user:vercel-admin-user@dacn.kxrrsop.mongodb.net/test"
+//const url = "mongodb+srv://vercel-admin-user:vercel-admin-user@dacn.kxrrsop.mongodb.net/test"
 //const url ="mongodb+srv://admin:admin@cluster0.mxicf65.mongodb.net/da"
+
+const uri = "mongodb+srv://admin:admin@cluster0.mxicf65.mongodb.net/?retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 app.use(express.json())
 
 
 
-mongoClient.connect(url, (err, db) =>{
+client.connect( (err, db) =>{
     if (err) {
       console.log("Error while connecting mongo client")
     }else {
