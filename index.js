@@ -35,13 +35,13 @@ const upload= multer({ storage: filestore})
 
 
 
-const url = "mongodb+srv://oenoen:oenoen@dacn.kxrrsop.mongodb.net/test"
+const url = "mongodb+srv://vercel-admin-user:vercel-admin-user@dacn.kxrrsop.mongodb.net/test"
 //const url ="mongodb+srv://admin:admin@cluster0.mxicf65.mongodb.net/da"
 app.use(express.json())
 
 
 
-mongoClient.connect(url, (err, db) =>{
+await mongoClient.connect(url, (err, db) =>{
     if (err) {
       console.log("Error while connecting mongo client")
     }else {
