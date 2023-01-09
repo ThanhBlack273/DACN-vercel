@@ -5,15 +5,15 @@
 //import 'dotenv/config';
 const {config} = require('dotenv').config();
 
-//console.log("ENV: " + JSON.stringify(process.env));
+console.log("ENV: " + JSON.stringify(process.env));
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
 //const uri = process.env['MONGODB_URI']; // SEE: https://dev.to/kvetoslavnovak/connect-to-mongodb-atlas-from-sveltekit-25hg
 //const uri = "mongodb+srv://mtyson:sukisue123@cluster0.smfbz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 
-//console.log("VITE: " + import.meta.env.VITE_MESSAGE);
-//
+console.log("VITE: " + import.meta.env.VITE_MESSAGE);
+
 
 process.env.MONGODB_URI
 const uri = process.env["MONGODB_URI"];
