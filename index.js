@@ -11,6 +11,7 @@ const cloudinary= require("cloudinary").v2
 const multer = require("multer")
 const path = require("path");
 const { type } = require('os');
+const { sign } = require('crypto');
 
 
 cloudinary.config({
@@ -49,38 +50,55 @@ const client = require("./mongo").client;
 
 app.use(express.json())
 
+async function main(){
+  try{
+    await client.connect();
+    await sign1(client);
+  }catch(e){
+    console.error(e);
+  } finally {
+      await client.close();
+  }
+  
+}
+main().catch(console.error);
+
+async function sign1(client){
+  app.post('/signup', (req,res) =>{
+    const myDb = client.db('test')
+    const collection = myDb.collection('Users')
+
+    const newUser = {
+      email: req.body.email,
+      tenngdung: req.body.tenngdung,
+      matkhau: bcrypt.hashSync(req.body.matkhau,saltRounds),
+      otp: "",
+      createAt: Date.now(),
+      expiresAt: Date.now(),
+      avatar: "http://res.cloudinary.com/dcllp2b8r/image/upload/v1669049364/galqynrofgin4x6cyxsq.jpg",
+      cloudinary_id: "galqynrofgin4x6cyxsq"
+    }
+    const query = { email: newUser.email }
+    collection.findOne(query, (err, result) => {
+      if (result==null) {
+        collection.insertOne(newUser, (err, result) =>{
+          res.status(200).send()
+        })
+      }
+      else if (query.email==result.email) {
+        res.status(201).send()
+        //Đã có email trên db
+      }else {
+        res.status(404).send()
+      }
+    })
+  })
+
+}
+
 //const db = client.connect()
 
-// app.post('/signup', (req,res) =>{
-//   const myDb = db.db('test')
-//   const collection = myDb.collection('Users')
-
-//   const newUser = {
-//     email: req.body.email,
-//     tenngdung: req.body.tenngdung,
-//     matkhau: bcrypt.hashSync(req.body.matkhau,saltRounds),
-//     otp: "",
-//     createAt: Date.now(),
-//     expiresAt: Date.now(),
-//     avatar: "http://res.cloudinary.com/dcllp2b8r/image/upload/v1669049364/galqynrofgin4x6cyxsq.jpg",
-//     cloudinary_id: "galqynrofgin4x6cyxsq"
-//   }
-//   const query = { email: newUser.email }
-//   collection.findOne(query, (err, result) => {
-//     if (result==null) {
-//       collection.insertOne(newUser, (err, result) =>{
-//         res.status(200).send()
-//       })
-//     }
-//     else if (query.email==result.email) {
-//       res.status(201).send()
-//       //Đã có email trên db
-//     }else {
-//       res.status(404).send()
-//     }
-//   })
-// })
-
+/*
 try {
   client.connect( (err, db) =>{
     if (err) {
@@ -587,7 +605,7 @@ try {
 } catch (e) {
   console.error(e);
 }
-
+*/
 
 
 const port = process.env.PORT || 3000
