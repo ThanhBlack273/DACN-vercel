@@ -93,6 +93,36 @@ async function sign1(client){
       }
     })
   })
+  app.get('/', (req,res) =>{
+    const myDb = client.db('test')
+    const collection = myDb.collection('Users')
+
+    const query = {email: "bb2222f@gmail.com"}
+    const matkhau = "aaaaa"
+
+    collection.findOne(query, (err, result) =>{
+      if (result!=null) {
+        if (bcrypt.compareSync(matkhau, result.matkhau))
+        {
+          const objToSend = {
+            email : result.email,
+            tenngdung : result.tenngdung,
+            avatar : result.avatar
+          }
+          res.status(200).send(JSON.stringify(objToSend))
+        }
+        else {
+          res.status(402).send()
+          //Sai mật khẩu
+        }
+      } else if (result==null) {
+        res.status(401).send("sai email")
+          //Sai email
+      } else {
+        res.status(404).send()
+      }
+    })
+  })
 
 }
 
