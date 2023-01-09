@@ -1,14 +1,10 @@
 const express = require('express');
 const app = express();
 
-const { ObjectId } = require('mongodb');
-//const mongoClient = require('mongodb').MongoClient;
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const mongoose = require("mongoose");
+const dotenv = require('dotenv');
 
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
-
 const nodemailer = require("nodemailer");
 const { json } = require('express');
 const cloudinary= require("cloudinary").v2
@@ -16,7 +12,7 @@ const multer = require("multer")
 const path = require("path");
 const { type } = require('os');
 
-//
+
 cloudinary.config({
   cloud_name: 'dcllp2b8r',
   api_key: '786475196392548',
@@ -36,16 +32,57 @@ const upload= multer({ storage: filestore})
 
 
 
-//const url = "mongodb+srv://vercel-admin-user:vercel-admin-user@dacn.kxrrsop.mongodb.net/test"
-//const url ="mongodb+srv://admin:admin@cluster0.mxicf65.mongodb.net/da"
+// //const mongoClient = require('mongodb').MongoClient;
+// const { MongoClient, ServerApiVersion } = require('mongodb');
 
-const uri = "mongodb+srv://admin:admin@cluster0.mxicf65.mongodb.net/?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+
+// //const url = "mongodb+srv://vercel-admin-user:vercel-admin-user@dacn.kxrrsop.mongodb.net/test"
+// //const url ="mongodb+srv://admin:admin@cluster0.mxicf65.mongodb.net/da"
+
+// const uri = process.env["MONGODB_URI"];
+// console.log(uri)
+// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+
+
+const client = require("./mongo").client;
+//import clientPromise from './mongo'
+
 app.use(express.json())
 
+//const db = client.connect()
 
+// app.post('/signup', (req,res) =>{
+//   const myDb = db.db('test')
+//   const collection = myDb.collection('Users')
 
-client.connect( (err, db) =>{
+//   const newUser = {
+//     email: req.body.email,
+//     tenngdung: req.body.tenngdung,
+//     matkhau: bcrypt.hashSync(req.body.matkhau,saltRounds),
+//     otp: "",
+//     createAt: Date.now(),
+//     expiresAt: Date.now(),
+//     avatar: "http://res.cloudinary.com/dcllp2b8r/image/upload/v1669049364/galqynrofgin4x6cyxsq.jpg",
+//     cloudinary_id: "galqynrofgin4x6cyxsq"
+//   }
+//   const query = { email: newUser.email }
+//   collection.findOne(query, (err, result) => {
+//     if (result==null) {
+//       collection.insertOne(newUser, (err, result) =>{
+//         res.status(200).send()
+//       })
+//     }
+//     else if (query.email==result.email) {
+//       res.status(201).send()
+//       //Đã có email trên db
+//     }else {
+//       res.status(404).send()
+//     }
+//   })
+// })
+
+try {
+  client.connect( (err, db) =>{
     if (err) {
       console.log("Error while connecting mongo client")
     }else {
@@ -547,6 +584,10 @@ client.connect( (err, db) =>{
       })
     }
 });
+} catch (e) {
+  console.error(e);
+}
+
 
 
 const port = process.env.PORT || 3000
