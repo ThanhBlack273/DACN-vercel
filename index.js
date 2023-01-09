@@ -89,7 +89,7 @@ async function sign1(client){
         res.status(201).send()
         //Đã có email trên db
       }else {
-        res.status(404).send()
+        res.status(404).send("da vao nhung loi")
       }
     })
   })
@@ -119,7 +119,7 @@ async function sign1(client){
         res.status(401).send("sai email")
           //Sai email
       } else {
-        res.status(404).send()
+        res.status(404).send("da vao nhung loi")
       }
     })
   })
