@@ -94,11 +94,12 @@ async function sign1(client){
     })
   })
   app.get('/', (req,res) =>{
+
     const myDb = client.db('test')
     const collection = myDb.collection('Users')
 
-    const query = {email: "bb2222f@gmail.com"}
-    const matkhau = "aaaaa"
+    const query = {email: "bb2222aaaaaaf@gmail.com"}
+    const matkhau = "aaaaaasdaqwea"
 
     collection.findOne(query, (err, result) =>{
       if (result!=null) {
