@@ -1,36 +1,29 @@
 {
-  "name": "runcode",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^1.33.0",
+    "express": "^4.18.2",
+    "mongodb": "^4.13.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.8.0",
+    "path": "^0.12.7"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "name": "dacn-vercel",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThanhBlack273/DACN-vercel.git"
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "bcrypt": "^5.0.1",
-    "bcryptjs": "^2.4.3",
-    "cloudinary": "^1.32.0",
-    "express": "^4.18.1",
-    "flask": "^0.2.10",
-    "mongodb": "^4.9.0",
-    "mongoose": "^6.5.3",
-    "multer": "^1.4.5-lts.1",
-    "nodemailer": "^6.7.8"
-  },
-  "engines": {
-    "node": "14.x"
-  },
-
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Mieu4621/DA_BE.git"
-  },
-  "keywords": [],
   "bugs": {
-    "url": "https://github.com/Mieu4621/DA_BE/issues"
+    "url": "https://github.com/ThanhBlack273/DACN-vercel/issues"
   },
-  "homepage": "https://github.com/Mieu4621/DA_BE#readme",
+  "homepage": "https://github.com/ThanhBlack273/DACN-vercel#readme",
   "description": ""
 }
