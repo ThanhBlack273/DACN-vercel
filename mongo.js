@@ -1,11 +1,6 @@
-//import dotenv from 'dotenv';
-//dotenv.config();
-//require('dotenv').config();
-
-//import 'dotenv/config';
 const {config} = require('dotenv').config();
 
-console.log("ENV: " + JSON.stringify(process.env));
+// console.log("ENV: " + JSON.stringify(process.env));
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
