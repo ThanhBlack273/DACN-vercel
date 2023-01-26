@@ -12,6 +12,7 @@ const cloudinary= require("cloudinary").v2
 const multer = require("multer")
 const path = require("path");
 const { type } = require('os');
+const { ObjectID } = require('bson');
 
 //
 cloudinary.config({
@@ -516,50 +517,85 @@ mongoClient.connect(url, (err, db) =>{
         if (err) throw err;
         else{
           let obj = new Array()
-          //for( let i=0; i<result.length;i++ )
-          for( let i=0; i<1;i++ )
+          for( let i=0; i<result.length;i++ )
+          //for( let i=0; i<1;i++ )
           {
             const send ={
               Question: result[i].Question,
               anw: result[i].anw
             }
 
-            const ques = {Questions: result[i]._id}
-            var result1 = await collection1.find(ques)
-            
+            for (let j=1;j<=20;j++){
+              
+            const ques = {Questions: result[i]._id.toString(),Code: j}
+            console.log(result[i]._id.toString())
+            var result1 = await collection1.findOne(ques)
+            console.log(result1)
             if (result1!=null){
+              console.log(result1)
               Object.assign(send,{Code: result1.Code, Sub: collection1.collectionName})
-              obj.push(send)
+              obj.push(send )
             }
 
-            var result2 = await collection2.find(ques)
+            var result2 = await collection2.findOne(ques)
             if (result2!=null){
+              console.log(result2)
               Object.assign(send,{Code: result2.Code, Sub: collection2.collectionName})
               obj.push(send)
             }
+            
+            }
           }    
+          console.log(obj)
           res.status(200).send(obj)           
         }
       })
     })
 
+
+    //searchid
     app.get('/searchid', async(req,res)=>{
       const myDb = db.db('da')
-      collection = myDb.collection(req.body.sub)
-      const ques = {Questions :req.body.id}
+      const collection = myDb.collection('Gdcd_new')
+      const query = {_id: ObjectID(req.body.id) }
 
-      console.log(ques)
-        collection.find(ques,{ projection: { _id: 0, Code: 1 } }).toArray(function(err, result) {
+    
+      collection.findOne(query, (err, result) =>{
         if (result!=null) {
-          console.log(result)
+          
           res.status(200).send(JSON.stringify(result))
+         
+        } else if (result==null) {
+          res.status(401).send("Không tìm thấy tài khoản")
+            //Sai email
         } else {
           res.status(404).send("Lỗi")
-          console.log("die")
         }
-        })
-      
+      })
     })
+
+    app.get('/searchid2', async(req,res)=>{
+      const myDb = db.db('da')
+      const collection = myDb.collection('Gdcd_new')
+      const query = {Questions: req.body.id,
+                    Code: req.body.Code}
+      
+      const que = {nice: ` ${req.body.Code}`} 
+        
+      collection.findOne(query, (err, result) =>{
+        if (result!=null) {
+          
+          res.status(200).send(JSON.stringify(result))
+         
+        } else if (result==null) {
+          res.status(401).send("Không tìm thấy tài khoản")
+            //Sai email
+        } else {
+          res.status(404).send("Lỗi")
+        }
+      })
+    })
+
   }
 });
 
@@ -571,22 +607,6 @@ app.listen(port, () => {
 
 
 //NGUYEN LAM
-
-// const { Router } = require('express')
-// const express = require('express')
-// const PostModel = require('./Models/PostModel')
-// //const app = express()
-// const port = process.env.PORT || 3000
-
-// app.get('/', (req, res) => {
-//   res.send('Hello World!')
-// })
-
-// app.listen(port, () => {
-//   console.log(`Example app listening on port ${port}`)
-// })
-
-
 
 
 // Router.post("/show-post", async (req, res) => {
