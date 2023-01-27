@@ -514,42 +514,55 @@ mongoClient.connect(url, (err, db) =>{
         ]
       }
       collection.find(query).toArray(async function(err,result){
-        if (err) throw err;
-        else{
+        if (result!=null) {
+          
           let obj = new Array()
           for( let i=0; i<result.length;i++ )
-          //for( let i=0; i<1;i++ )
           {
             const send ={
               Question: result[i].Question,
-              anw: result[i].anw
+              anw: result[i].anw,
+              exam: new Array(),
+              review : new Array()
             }
+            var result1, result2
 
             for (let j=1;j<=20;j++){
+              const ques = {Questions: result[i]._id.toString(),Code: j.toString()}
+                
+              result1 = await collection1.findOne(ques)
+              if (result1!=null){
+                send.exam.push(j.toString())
+              }
+
+              result2 = await collection2.findOne(ques)
+              if (result2!=null){
+                send.review.push(j.toString())
+              }
               
-            const ques = {Questions: result[i]._id.toString(),Code: j}
-            console.log(result[i]._id.toString())
-            var result1 = await collection1.findOne(ques)
-            console.log(result1)
-            if (result1!=null){
-              console.log(result1)
-              Object.assign(send,{Code: result1.Code, Sub: collection1.collectionName})
-              obj.push(send )
             }
 
-            var result2 = await collection2.findOne(ques)
-            if (result2!=null){
-              console.log(result2)
-              Object.assign(send,{Code: result2.Code, Sub: collection2.collectionName})
-              obj.push(send)
-            }
-            
-            }
+            // result1 = await collection1.findOne(ques)
+            // //console.log(result1)
+            // if (result1!=null){
+            //   //console.log(result1)
+            //   Object.assign(send,{Code: result1.Code, Sub: collection1.collectionName})
+            //   obj.push(send )
+            //   console.log(obj)
+            // }
+
+            obj.push(send)
           }    
-          console.log(obj)
-          res.status(200).send(obj)           
+          //console.log(obj)
+          res.status(200).send(obj)    
+        }else if (result==null) {
+          res.status(401).send("Không tìm thấy từ khóa")
+            //Sai email
+        } else {
+          res.status(404).send("Lỗi")
         }
       })
+
     })
 
 
