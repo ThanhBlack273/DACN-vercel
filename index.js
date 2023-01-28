@@ -565,7 +565,6 @@ mongoClient.connect(url, (err, db) =>{
 
     })
 
-
     //searchid
     app.get('/searchid', async(req,res)=>{
       const myDb = db.db('da')
@@ -607,6 +606,133 @@ mongoClient.connect(url, (err, db) =>{
           res.status(404).send("Lỗi")
         }
       })
+    })
+
+    app.post('/saveresult', async (req,res)=>{
+      const myDb = db.db('test')
+      const collection = myDb.collection('save2')
+
+      const query = {email: req.body.email}
+      collection.findOne(query,(err,result)=>{
+        if (result != null)
+        {
+          if (req.body.type=="exam"){
+            var save = {
+              $push:{
+                exam: 
+                  {
+                    _id: ObjectID(), 
+                    sub: req.body.sub,
+                    time: req.body.time,
+                    done: req.body.done
+                  }
+              }
+            }
+          }else if (req.body.type=="review"){
+            var save = {
+              $push:{
+                review: 
+                  {
+                    _id: ObjectID(), 
+                    sub: req.body.sub,
+                    time: req.body.time,
+                    done: req.body.done
+                  }
+              }
+            }
+          }
+          collection.updateOne(query,save, (err, result) =>{
+            res.status(200).send()
+          })
+        }
+        else if (result == null)
+        {
+          if (req.body.type=="exam"){
+            var save = {
+              email: req.body.email,
+              exam: [
+                {
+                  English:[
+
+                  ]
+                },
+                {
+                  Gdcd:[
+
+                  ]
+                },
+                {
+                  History:[
+
+                  ]
+                },
+                {
+                  Geography:[
+
+                  ]
+                }
+              ]
+            }
+          }else if (req.body.type=="review"){
+
+            var save = {
+              email: req.body.email,
+              review: [
+                {
+                  _id: ObjectID(), 
+                  sub: req.body.sub,
+                  time: req.body.time,
+                  done: req.body.done
+                }
+              ]
+            }
+          }
+
+          collection.insertOne(save, (err, result) =>{
+            res.status(200).send()
+          })
+        }
+        else {
+
+        }
+      })
+
+    })
+
+    app.post('/getresult', async(req,res)=>{
+      const myDb = db.db('test')
+      const collection = myDb.collection('save2')
+      const query = {email: req.body.email}
+
+      collection.findOne(query,(err,result)=>{
+        if( result!=null){
+          res.status(200).send(result)
+        }
+      })
+    })
+
+    app.post('/test', async (req,res)=>{
+      const myDb = db.db('test')
+      const collection = myDb.collection('save2')
+
+      const send = {email: req.body.email}
+      const query = { 
+        $push:{
+          //email: req.body.email,
+          list: 
+              {
+                sub: req.body.sub,
+                time: req.body.time,
+                done: req.body.done
+                }
+              
+        }
+      }
+      collection.updateOne(send,query, (err, result) =>{
+        res.status(200).send()
+      })
+      // collection.insertOne(query)
+      res.status(200).send(query)
     })
 
   }
