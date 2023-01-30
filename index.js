@@ -12,14 +12,16 @@ const cloudinary= require("cloudinary").v2
 const multer = require("multer")
 const path = require("path");
 const { type } = require('os');
-const { ObjectID } = require('bson');
+const { ObjectID, ObjectId } = require('bson');
 
-//
+//config đăng nhập cloudinary
 cloudinary.config({
   cloud_name: 'dcllp2b8r',
   api_key: '786475196392548',
   api_secret: '0FHkZlrgOAFGqcOk1mhKwi5oYbI'
 })
+
+//phát hiện file hình ảnh
 const filestore= multer.diskStorage({
   fileFilter: (req, file, cb)=>{
     let ext = path.extname(file.originalname);
@@ -36,6 +38,7 @@ const upload= multer({ storage: filestore})
 //const router = express.Router();
 //const MyModel = require("../Models/MyModels");
 
+//Link mongodb 
 //const url = "mongodb+srv://oenoen:oenoen@dacn.kxrrsop.mongodb.net/test"
 const url ="mongodb+srv://admin:admin@cluster0.mxicf65.mongodb.net/da"
 app.use(express.json())
@@ -44,11 +47,12 @@ mongoClient.connect(url, (err, db) =>{
   if (err) {
     console.log("Error while connecting mongo client")
   }else {
-    // Đăng ký
+    
     app.get('/', (req,res) =>{
       res.status(200).send("Hello")
     })
 
+    // Đăng ký
     app.post('/signup', (req,res) =>{
       const myDb = db.db('test')
       const collection = myDb.collection('Users')
@@ -60,7 +64,7 @@ mongoClient.connect(url, (err, db) =>{
         otp: "",
         createAt: Date.now(),
         expiresAt: Date.now(),
-        avatar: "http://res.cloudinary.com/dcllp2b8r/image/upload/v1669049364/galqynrofgin4x6cyxsq.jpg",
+        avatar: "http://res.cloudinary.com/dcllp2b8r/image/upload/v1669049364/galqynrofgin4x6cyxsq.jpg", //ảnh mặc định
         cloudinary_id: "galqynrofgin4x6cyxsq"
       }
       const query = { email: newUser.email }
@@ -88,6 +92,7 @@ mongoClient.connect(url, (err, db) =>{
 
       collection.findOne(query, (err, result) =>{
         if (result!=null) {
+          //so sánh mật khẩu mã hóa lưu trên db
           if (bcrypt.compareSync(matkhau, result.matkhau))
           {
             const objToSend = {
@@ -130,11 +135,12 @@ mongoClient.connect(url, (err, db) =>{
       const myDb = db.db('da')
       const query = {Code: req.body.Code}
 
+      //random 4 câu trả lời
       function ran(obj)
       {
         sourceArray=["a", "b", "c", "d"]
         for (var i = 0; i < sourceArray.length - 1; i++) {
-          var j = i + Math.floor(Math.random() * (sourceArray.length - i));
+          var j = i + Math.floor(Math.random() * (sourceArray.length - i)); //tạo thứ tự
   
           var temp = sourceArray[j];
           sourceArray[j] = sourceArray[i];
@@ -162,13 +168,11 @@ mongoClient.connect(url, (err, db) =>{
                let obj = new Array()
                for(i=0;i<result.Questions.length;i++)
                {
-                const ques = {_id: result.Questions[i]}
-                console.log(ques)
+                const ques = {_id: ObjectId(result.Questions[i])}
                 var found = await collection.findOne(ques)
                 obj.push(ran(found))
                }
               res.status(200).send(obj)
-                  
             } else {
               res.status(404).send()
               console.log("die1")
@@ -207,7 +211,6 @@ mongoClient.connect(url, (err, db) =>{
       const myDb = db.db('test')
       const collection = myDb.collection('Users')
       
-      
       const query = { email: req.body.email }
       
       collection.findOne(query, (err, result) => {
@@ -220,7 +223,7 @@ mongoClient.connect(url, (err, db) =>{
               pass: 'rfeuydoyskalctfh'
             }
             });
-            const otp = `${Math.floor(1000+ Math.random() * 9000)}`;
+            const otp = `${Math.floor(1000+ Math.random() * 9000)}`; //random 4 số otp
             var mainOptions = { // thiết lập đối tượng, nội dung gửi mail
               from: 'App',
               to: result.email,
@@ -228,16 +231,16 @@ mongoClient.connect(url, (err, db) =>{
               html: `<p>Mã OTP của bạn là: <b>${otp}</b></p>
                       <p>Mã sẽ hết hiệu lực sau 5 phút.</p>`,
             }
-            transporter.sendMail(mainOptions, function(err, info){
+            transporter.sendMail(mainOptions, function(err, info){ //bắt đầu gửi mail
               if (err) {
                   console.log(err);
               } else {
                   res.status(200).send("Gửi mail thành công")
                   console.log("Gửi mail thành công")
                   //gửi thành công
-                  const userOTPverify={
+                  const userOTPverify={  //cập nhật otp trong db
                     $set: {
-                      otp: bcrypt.hashSync(otp, saltRounds),
+                      otp: bcrypt.hashSync(otp, saltRounds),  //mã hóa otp
                       createAt: Date.now(),
                       expiresAt: Date.now()+300000 
                     }
@@ -263,9 +266,6 @@ mongoClient.connect(url, (err, db) =>{
 
       const query = { email: req.body.email}
       const otp=  req.body.otp
-
-      console.log("verifyOTP")
-      console.log(req.body)
       
       collection.findOne(query, (err,result)=>{
         if (result!=null){
@@ -273,10 +273,10 @@ mongoClient.connect(url, (err, db) =>{
             //timeout
             res.status(201).send()
           } else{
-            if (bcrypt.compareSync(otp, result.otp)){
+            if (bcrypt.compareSync(otp, result.otp)){  //so sánh otp đã lưu trong db
               res.status(200).send("Đổi mật khẩu thành công")
               console.log("Đổi mật khẩu thành công")
-              const deleteOTP= { $set:{ otp: ""}}
+              const deleteOTP= { $set:{ otp: ""}} //xóa otp
               collection.updateOne(query, deleteOTP, function(err, res){
                 if (err) throw err;
               })
@@ -305,9 +305,6 @@ mongoClient.connect(url, (err, db) =>{
     app.post('/changepass', function(req,res){
       const myDb = db.db('test')
       const collection = myDb.collection('Users')
-
-      console.log("changepass")
-      console.log(req.body)
 
       const query = { email: req.body.email }
       collection.findOne(query, (err, result) => {
@@ -362,7 +359,6 @@ mongoClient.connect(url, (err, db) =>{
       {
         var upImg = await cloudinary.uploader.upload(req.file.path) //up anh len cloudinary
       
-      
         const myDb = db.db('test')
         const collection = myDb.collection('Users')
         // up anh len mongo
@@ -382,13 +378,9 @@ mongoClient.connect(url, (err, db) =>{
               res.status(400).send()
             } 
             else res.status(404).send()
-
           })
-
       }
       else res.status(404).send("Không có ảnh")
-      
-      
    })
 
    app.post('/changeinfo2', upload.single('image'), async (req,res)=>{
@@ -550,7 +542,7 @@ mongoClient.connect(url, (err, db) =>{
             //   obj.push(send )
             //   console.log(obj)
             // }
-
+            
             obj.push(send)
           }    
           //console.log(obj)
