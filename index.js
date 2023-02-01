@@ -605,87 +605,51 @@ mongoClient.connect(url, (err, db) =>{
       const collection = myDb.collection('save2')
 
       const query = {email: req.body.email}
+      const sub = req.body.sub
+      const type = req.body.type
       collection.findOne(query,(err,result)=>{
         if (result != null)
         {
-          if (req.body.type=="exam"){
-            var save = {
-              $push:{
-                exam: 
-                  {
-                    _id: ObjectID(), 
-                    sub: req.body.sub,
-                    time: req.body.time,
-                    done: req.body.done
-                  }
-              }
-            }
-          }else if (req.body.type=="review"){
-            var save = {
-              $push:{
-                review: 
-                  {
-                    _id: ObjectID(), 
-                    sub: req.body.sub,
-                    time: req.body.time,
-                    done: req.body.done
-                  }
-              }
+          var save = {
+            $push:{
+              [type]: 
+                {
+                  [sub]:[
+                    {
+                      _id: ObjectID(), 
+                      time: req.body.time,
+                      done: req.body.done
+                    }
+                  ]
+                }
             }
           }
+          
           collection.updateOne(query,save, (err, result) =>{
             res.status(200).send()
           })
         }
         else if (result == null)
         {
-          if (req.body.type=="exam"){
             var save = {
               email: req.body.email,
-              exam: [
+              [type]: 
                 {
-                  English:[
-
-                  ]
-                },
-                {
-                  Gdcd:[
-
-                  ]
-                },
-                {
-                  History:[
-
-                  ]
-                },
-                {
-                  Geography:[
-
+                  [sub]:[
+                    {
+                      _id: ObjectID(), 
+                      time: req.body.time,
+                      done: req.body.done
+                    }
                   ]
                 }
-              ]
             }
-          }else if (req.body.type=="review"){
-
-            var save = {
-              email: req.body.email,
-              review: [
-                {
-                  _id: ObjectID(), 
-                  sub: req.body.sub,
-                  time: req.body.time,
-                  done: req.body.done
-                }
-              ]
-            }
-          }
-
           collection.insertOne(save, (err, result) =>{
             res.status(200).send()
           })
         }
         else {
-
+          
         }
       })
 
