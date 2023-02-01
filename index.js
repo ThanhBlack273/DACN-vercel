@@ -472,26 +472,29 @@ mongoClient.connect(url, (err, db) =>{
 
     app.post('/search', async (req,res)=>{
       const myDb = db.db('da')
-      const collection = myDb.collection(req.body.sub)   
-      var collection1, collection2
+      var collection1, collection2, collection 
            
       if(req.body.sub=="Eng")
       {
+        collection = myDb.collection('English')   
         collection1 = myDb.collection('Eng_exam')
         collection2 = myDb.collection('Eng_review')
       }
       else if(req.body.sub=="His")
       {
+        collection = myDb.collection('History')  
         collection1 = myDb.collection('His_exam')
         collection2 = myDb.collection('His_review')
       }
       else if(req.body.sub=="Geo")
       {
+        collection = myDb.collection('Geography')  
         collection1 = myDb.collection('Geo_exam')
         collection2 = myDb.collection('Geo_review')
       }
       else if(req.body.sub=="Gdcd")
       {
+        collection = myDb.collection('Gdcd')  
         collection1 = myDb.collection('Gdcd_exam')
         collection2 = myDb.collection('Gdcd_review')
       }   
@@ -629,6 +632,7 @@ mongoClient.connect(url, (err, db) =>{
       const type = req.body.type
       const mix = `${type}.${sub}`
       const count = c+`${req.body.type}`
+      //const 
 
       collection.findOne(query,(err,result)=>{
         if (result != null)
@@ -644,6 +648,7 @@ mongoClient.connect(url, (err, db) =>{
           collection.updateOne(query,save, (err, result) =>{
             res.status(200).send(result)
           })
+          //collection.updateOne(query,{$set:{count:}})
         }
         else if (result == null)
         {
@@ -651,6 +656,7 @@ mongoClient.connect(url, (err, db) =>{
 
             const save = {
               email: req.body.email,
+              [count]:"1",
               [type]: 
                 {
                   [sub]:[
