@@ -605,17 +605,40 @@ mongoClient.connect(url, (err, db) =>{
       const collection = myDb.collection('save2')
 
       const query = {email: req.body.email}
-      const sub = req.body.sub
+      
+      if(req.body.sub=="Eng_exam"||req.body.sub=="Eng_review")
+      {
+        var sub="English"
+      }
+      else if(req.body.sub=="His_exam"||req.body.sub=="His_review")
+      {
+        var sub="History"
+      }
+      else if(req.body.sub=="Geo_exam"||req.body.sub=="Geo_review")
+      {
+        var sub="Geography"
+      }
+      else if(req.body.sub=="Gdcd_exam"||req.body.sub=="Gdcd_review")
+      {
+        var sub="Gdcd"
+      }        
+      else {
+        var sub = req.body.sub
+      }
+
       const type = req.body.type
       const mix = `${type}.${sub}`
 
       collection.findOne(query,(err,result)=>{
         if (result != null)
         {
-          const save = {$push: {[mix]:{_id: ObjectID(), 
-            code: req.body.code,
-            time: req.body.time,
-            done: req.body.done}}}
+          const save = {
+            $push: {[mix]:
+              {_id: ObjectID(), 
+                code: req.body.code,
+                time: req.body.time,
+                done: req.body.done}}
+          }
           
           collection.updateOne(query,save, (err, result) =>{
             res.status(200).send(result)
@@ -648,12 +671,20 @@ mongoClient.connect(url, (err, db) =>{
 
     })
 
-    app.post('/getresult', async(req,res)=>{
+    app.get('/getresult', async(req,res)=>{
       const myDb = db.db('test')
       const collection = myDb.collection('save2')
-      const query = {email: req.body.email}
+      const query = {email: req.query.email}
+      
+      const sub = req.query.sub
+      const type = req.query.type
+      const mix = `${type}.${sub}`
 
-      collection.findOne(query,(err,result)=>{
+      // collection.findOne(query,{ projection: { _id: 0, Questions: 1 } }).toArray((err, result) =>{
+
+      // })
+
+      collection.findOne(query,{ projection: { _id: 0, [mix]: 1 } },(err,result)=>{
         if( result!=null){
           res.status(200).send(result)
         }
