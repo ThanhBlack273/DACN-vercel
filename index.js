@@ -607,37 +607,30 @@ mongoClient.connect(url, (err, db) =>{
       const query = {email: req.body.email}
       const sub = req.body.sub
       const type = req.body.type
+      const mix = `${type}.${sub}`
+
       collection.findOne(query,(err,result)=>{
         if (result != null)
         {
-          var save = {
-            $push:{
-              [type]: 
-                {
-                  [sub]:[
-                    {
-                      _id: ObjectID(), 
-                      time: req.body.time,
-                      done: req.body.done
-                    }
-                  ]
-                }
-            }
-          }
+          const save = {$push: {[mix]:{_id: ObjectID(), 
+            code: req.body.code,
+            time: req.body.time,
+            done: req.body.done}}}
           
           collection.updateOne(query,save, (err, result) =>{
-            res.status(200).send()
+            res.status(200).send(result)
           })
         }
         else if (result == null)
         {
-            var save = {
+            const save = {
               email: req.body.email,
               [type]: 
                 {
                   [sub]:[
                     {
                       _id: ObjectID(), 
+                      code: req.body.code,
                       time: req.body.time,
                       done: req.body.done
                     }
@@ -645,11 +638,11 @@ mongoClient.connect(url, (err, db) =>{
                 }
             }
           collection.insertOne(save, (err, result) =>{
-            res.status(200).send()
+            res.status(200).send(result)
           })
         }
         else {
-          
+          console.log("Lôi")
         }
       })
 
