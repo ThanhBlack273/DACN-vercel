@@ -631,12 +631,13 @@ mongoClient.connect(url, (err, db) =>{
 
       const type = req.body.type
       const mix = `${type}.${sub}`
-      const count = c+`${req.body.type}`
-      //const 
+      // const count = 'c+`${req.body.type}`'
+      
 
       collection.findOne(query,(err,result)=>{
         if (result != null)
         {
+          // const valu = result.$[count]+1
           const save = {
             $push: {[mix]:
               {_id: ObjectID(), 
@@ -648,15 +649,13 @@ mongoClient.connect(url, (err, db) =>{
           collection.updateOne(query,save, (err, result) =>{
             res.status(200).send(result)
           })
-          //collection.updateOne(query,{$set:{count:}})
+          // collection.updateOne(query,{$set:{count:valu}})
         }
         else if (result == null)
         {
-
-
             const save = {
               email: req.body.email,
-              [count]:"1",
+              // [count]:"1",
               [type]: 
                 {
                   [sub]:[
