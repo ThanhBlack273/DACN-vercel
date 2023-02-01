@@ -475,17 +475,17 @@ mongoClient.connect(url, (err, db) =>{
       const collection = myDb.collection(req.body.sub)   
       var collection1, collection2
            
-      if(req.body.sub=="English")
+      if(req.body.sub=="Eng")
       {
         collection1 = myDb.collection('Eng_exam')
         collection2 = myDb.collection('Eng_review')
       }
-      else if(req.body.sub=="History")
+      else if(req.body.sub=="His")
       {
         collection1 = myDb.collection('His_exam')
         collection2 = myDb.collection('His_review')
       }
-      else if(req.body.sub=="Geography")
+      else if(req.body.sub=="Geo")
       {
         collection1 = myDb.collection('Geo_exam')
         collection2 = myDb.collection('Geo_review')
@@ -628,6 +628,7 @@ mongoClient.connect(url, (err, db) =>{
 
       const type = req.body.type
       const mix = `${type}.${sub}`
+      const count = c+`${req.body.type}`
 
       collection.findOne(query,(err,result)=>{
         if (result != null)
@@ -646,6 +647,8 @@ mongoClient.connect(url, (err, db) =>{
         }
         else if (result == null)
         {
+
+
             const save = {
               email: req.body.email,
               [type]: 
