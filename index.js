@@ -631,13 +631,19 @@ mongoClient.connect(url, (err, db) =>{
 
       const type = req.body.type
       const mix = `${type}.${sub}`
-      // const count = 'c+`${req.body.type}`'
-      
+      const count = "c"+req.body.type
 
       collection.findOne(query,(err,result)=>{
         if (result != null)
         {
-          // const valu = result.$[count]+1
+          if(result[count]!=null){
+            var valu = Number(result[count])+1
+            collection.updateOne(query,{$set:{[count]:valu}})
+          }
+          else {
+            var valu = Number(1)
+            collection.updateOne(query,{$set:{[count]:valu}})
+          } 
           const save = {
             $push: {[mix]:
               {_id: ObjectID(), 
@@ -645,17 +651,15 @@ mongoClient.connect(url, (err, db) =>{
                 time: req.body.time,
                 done: req.body.done}}
           }
-          
           collection.updateOne(query,save, (err, result) =>{
             res.status(200).send(result)
           })
-          // collection.updateOne(query,{$set:{count:valu}})
         }
         else if (result == null)
         {
             const save = {
               email: req.body.email,
-              // [count]:"1",
+              [count]:Number(1),
               [type]: 
                 {
                   [sub]:[
@@ -673,7 +677,7 @@ mongoClient.connect(url, (err, db) =>{
           })
         }
         else {
-          console.log("Lôi")
+          res.status(404).send("Lỗi")
         }
       })
 
@@ -684,15 +688,12 @@ mongoClient.connect(url, (err, db) =>{
       const collection = myDb.collection('save2')
       const query = {email: req.query.email}
       
+      const count = "c"+req.query.type
       const sub = req.query.sub
       const type = req.query.type
       const mix = `${type}.${sub}`
 
-      // collection.findOne(query,{ projection: { _id: 0, Questions: 1 } }).toArray((err, result) =>{
-
-      // })
-
-      collection.findOne(query,{ projection: { _id: 0, [mix]: 1 } },(err,result)=>{
+      collection.findOne(query,{ projection: { _id: 0,[count]:1, [mix]: 1 } },(err,result)=>{
         if( result!=null){
           res.status(200).send(result)
         }
