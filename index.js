@@ -649,6 +649,7 @@ mongoClient.connect(url, (err, db) =>{
                 socauchualam: req.body.socauchualam,
                 socaudung: req.body.socaudung,
                 socausai: req.body.socausai,
+                socaudalam: req.body.socaudalam,
                 time: req.body.time,
                 done: req.body.done}}
           }
@@ -670,6 +671,7 @@ mongoClient.connect(url, (err, db) =>{
                       socauchualam: req.body.socauchualam,
                       socaudung: req.body.socaudung,
                       socausai: req.body.socausai,
+                      socaudalam: req.body.socaudalam,
                       time: req.body.time,
                       done: req.body.done
                     }
