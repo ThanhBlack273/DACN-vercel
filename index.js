@@ -544,7 +544,7 @@ mongoClient.connect(url, (err, db) =>{
             //   Object.assign(send,{Code: result1.Code, Sub: collection1.collectionName})
             //   obj.push(send )
             //   console.log(obj)
-            // }
+            //}
             
             obj.push(send)
           }    
@@ -552,48 +552,6 @@ mongoClient.connect(url, (err, db) =>{
           res.status(200).send(obj)    
         }else if (result==null) {
           res.status(401).send("Không tìm thấy từ khóa")
-            //Sai email
-        } else {
-          res.status(404).send("Lỗi")
-        }
-      })
-    })
-
-    //searchid
-    app.get('/searchid', async(req,res)=>{
-      const myDb = db.db('da')
-      const collection = myDb.collection('Gdcd_new')
-      const query = {_id: ObjectID(req.body.id) }
-
-      collection.findOne(query, (err, result) =>{
-        if (result!=null) {
-          
-          res.status(200).send(JSON.stringify(result))
-         
-        } else if (result==null) {
-          res.status(401).send("Không tìm thấy tài khoản")
-            //Sai email
-        } else {
-          res.status(404).send("Lỗi")
-        }
-      })
-    })
-
-    app.get('/searchid2', async(req,res)=>{
-      const myDb = db.db('da')
-      const collection = myDb.collection('Gdcd_new')
-      const query = {Questions: req.body.id,
-                    Code: req.body.Code}
-      
-      const que = {nice: ` ${req.body.Code}`} 
-        
-      collection.findOne(query, (err, result) =>{
-        if (result!=null) {
-          
-          res.status(200).send(JSON.stringify(result))
-         
-        } else if (result==null) {
-          res.status(401).send("Không tìm thấy tài khoản")
             //Sai email
         } else {
           res.status(404).send("Lỗi")
@@ -662,19 +620,19 @@ mongoClient.connect(url, (err, db) =>{
               email: req.body.email,
               [count]:Number(1),
               [type]: 
-                {
-                  [sub]:[
-                    {
-                      _id: ObjectID(), 
-                      code: req.body.code,
-                      socauchualam: req.body.socauchualam,
-                      socaudung: req.body.socaudung,
-                      socausai: req.body.socausai,
-                      time: req.body.time,
-                      done: req.body.done
-                    }
-                  ]
-                }
+              {
+                [sub]:[
+                  {
+                    _id: ObjectID(), 
+                    code: req.body.code,
+                    socauchualam: req.body.socauchualam,
+                    socaudung: req.body.socaudung,
+                    socausai: req.body.socausai,
+                    time: req.body.time,
+                    done: req.body.done
+                  }
+                ]
+              }
             }
           collection.insertOne(save, (err, result) =>{
             res.status(200).send(result)
