@@ -565,19 +565,20 @@ mongoClient.connect(url, (err, db) =>{
 
       const query = {email: req.body.email}
       
-      if(req.body.sub=="Eng_exam"||req.body.sub=="Eng_review")
+      
+      if(req.body.sub=="Eng_exam"||req.body.sub=="Eng_review"||req.body.sub=="Eng")
       {
         var sub="English"
       }
-      else if(req.body.sub=="His_exam"||req.body.sub=="His_review")
+      else if(req.body.sub=="His_exam"||req.body.sub=="His_review"||req.body.sub=="His")
       {
         var sub="History"
       }
-      else if(req.body.sub=="Geo_exam"||req.body.sub=="Geo_review")
+      else if(req.body.sub=="Geo_exam"||req.body.sub=="Geo_review"||req.body.sub=="Geo")
       {
         var sub="Geography"
       }
-      else if(req.body.sub=="Gdcd_exam"||req.body.sub=="Gdcd_review")
+      else if(req.body.sub=="Gdcd_exam"||req.body.sub=="Gdcd_review"||req.body.sub=="Gdcd")
       {
         var sub="Gdcd"
       }        
