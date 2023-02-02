@@ -557,7 +557,6 @@ mongoClient.connect(url, (err, db) =>{
           res.status(404).send("Lỗi")
         }
       })
-
     })
 
     //searchid
@@ -566,7 +565,6 @@ mongoClient.connect(url, (err, db) =>{
       const collection = myDb.collection('Gdcd_new')
       const query = {_id: ObjectID(req.body.id) }
 
-    
       collection.findOne(query, (err, result) =>{
         if (result!=null) {
           
@@ -703,6 +701,10 @@ mongoClient.connect(url, (err, db) =>{
         if( result!=null){
           res.status(200).send(result)
         }
+        else if ( result==null){
+          res.status(401).send("Chưa làm bài")
+        }
+        else res.status(404).send("lỗi")
       })
     })
 
