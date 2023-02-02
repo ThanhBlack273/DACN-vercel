@@ -648,6 +648,9 @@ mongoClient.connect(url, (err, db) =>{
             $push: {[mix]:
               {_id: ObjectID(), 
                 code: req.body.code,
+                socauchualam: req.body.socauchualam,
+                socaudung: req.body.socaudung,
+                socausai: req.body.socausai,
                 time: req.body.time,
                 done: req.body.done}}
           }
@@ -666,6 +669,9 @@ mongoClient.connect(url, (err, db) =>{
                     {
                       _id: ObjectID(), 
                       code: req.body.code,
+                      socauchualam: req.body.socauchualam,
+                      socaudung: req.body.socaudung,
+                      socausai: req.body.socausai,
                       time: req.body.time,
                       done: req.body.done
                     }
