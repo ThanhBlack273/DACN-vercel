@@ -474,25 +474,25 @@ mongoClient.connect(url, (err, db) =>{
       const myDb = db.db('da')
       var collection1, collection2, collection 
            
-      if(req.body.sub=="Eng")
+      if(req.body.sub=="Eng_exam"||req.body.sub=="Eng_review"||req.body.sub=="Eng")
       {
         collection = myDb.collection('English')   
         collection1 = myDb.collection('Eng_exam')
         collection2 = myDb.collection('Eng_review')
       }
-      else if(req.body.sub=="His")
+      else if(req.body.sub=="His_exam"||req.body.sub=="His_review"||req.body.sub=="His")
       {
         collection = myDb.collection('History')  
         collection1 = myDb.collection('His_exam')
         collection2 = myDb.collection('His_review')
       }
-      else if(req.body.sub=="Geo")
+      else if(req.body.sub=="Geo_exam"||req.body.sub=="Geo_review"||req.body.sub=="Geo")
       {
         collection = myDb.collection('Geography')  
         collection1 = myDb.collection('Geo_exam')
         collection2 = myDb.collection('Geo_review')
       }
-      else if(req.body.sub=="Gdcd")
+      else if(req.body.sub=="Gdcd_exam"||req.body.sub=="Gdcd_review"||req.body.sub=="Gdcd")
       {
         collection = myDb.collection('Gdcd')  
         collection1 = myDb.collection('Gdcd_exam')
@@ -657,6 +657,22 @@ mongoClient.connect(url, (err, db) =>{
       const mix = `${type}.${sub}`
 
       collection.findOne(query,{ projection: { _id: 0,[count]:1, [mix]: 1 } },(err,result)=>{
+        if( result!=null){
+          res.status(200).send(result)
+        }
+        else if ( result==null){
+          res.status(401).send("Chưa làm bài")
+        }
+        else res.status(404).send("lỗi")
+      })
+    })
+
+    app.get('/count', async(req,res)=>{
+      const myDb = db.db('test')
+      const collection = myDb.collection('save2')
+      const query = {email: req.query.email}
+
+      collection.findOne(query,{ projection: { _id: 0,cexam:1, creview: 1 } },(err,result)=>{
         if( result!=null){
           res.status(200).send(result)
         }
