@@ -639,7 +639,6 @@ mongoClient.connect(url, (err, db) =>{
             
           collection.insertOne(save, (err, result) =>{
             res.status(200).send(result)
-            //newww
           })
         }
         else {
@@ -670,32 +669,32 @@ mongoClient.connect(url, (err, db) =>{
       })
     })
 
-    // app.get('/getnewresult', async(req,res)=>{
-    //   const myDb = db.db('test')
-    //   const collection = myDb.collection('save2')
-    //   const query = {email: req.query.email}
+    app.get('/getnewresult', async(req,res)=>{
+      const myDb = db.db('test')
+      const collection = myDb.collection('save2')
+      const query = {email: req.query.email}
       
-    //   const sub = req.query.sub
-    //   const type = req.query.type
-    //   const mix = `${type}.${sub}`
+      const sub = req.query.sub
+      const type = req.query.type
+      const mix = `${type}.${sub}`
       
 
-    //   //const result = await collection.findOne(query,{ projection: { _id: 0, [mix]: 1 } })
+      //const result = await collection.findOne(query,{ projection: { _id: 0, [mix]: 1 } })
 
-    //   collection.aggregate({$match:{email: req.query.email}},(err,result)=>{
-    //     console.log(result)
+      collection.aggregate({$match:{email: req.query.email}},(err,result)=>{
+        console.log(result)
 
-    //   if( result!=null){
-    //     res.status(200).send(result)
-    //   }
-    //   else if ( result==null){
-    //     res.status(401).send({cod:"401"})
-    //   }
-    //   else res.status(404).send({cod:"404"})
-    //   })
+      if( result!=null){
+        res.status(200).send(result)
+      }
+      else if ( result==null){
+        res.status(401).send({cod:"401"})
+      }
+      else res.status(404).send({cod:"404"})
+      })
 
       
-    // })
+    })
 
     app.get('/count', async(req,res)=>{
       const myDb = db.db('test')
