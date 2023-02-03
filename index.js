@@ -613,7 +613,7 @@ mongoClient.connect(url, (err, db) =>{
                 done: req.body.done}}
           }
           collection.updateOne(query,save, (err, result) =>{
-            res.status(200).send(id.toString())
+            res.status(200).send({_id:id})
           })
         }
         else if (result == null)
@@ -638,7 +638,7 @@ mongoClient.connect(url, (err, db) =>{
             }
             
           collection.insertOne(save, (err, result) =>{
-            res.status(200).send(id.toString())
+            res.status(200).send({_id:id})
           })
         }
         else {
