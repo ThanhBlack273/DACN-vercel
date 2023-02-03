@@ -696,13 +696,13 @@ mongoClient.connect(url, (err, db) =>{
       
     })
 
-    app.get('/count', async(req,res)=>{
+    app.get('/count',(req,res)=>{
       const myDb = db.db('test')
       const collection = myDb.collection('save2')
       const query = {email: req.query.email}
 
       collection.findOne(query,{ projection: { _id: 0,cexam:1, creview: 1 } },(err,result)=>{
-        if( result!=null && _.isEmpty(result)){
+        if( result!=null){
           res.status(200).send(result)
         }
         else if ( result==null){
