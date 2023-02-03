@@ -589,6 +589,7 @@ mongoClient.connect(url, (err, db) =>{
       const type = req.body.type
       const mix = `${type}.${sub}`
       const count = "c"+req.body.type
+      const id= ObjectID()
 
       collection.findOne(query,(err,result)=>{
         if (result != null)
@@ -603,7 +604,7 @@ mongoClient.connect(url, (err, db) =>{
           } 
           const save = {
             $push: {[mix]:
-              {_id: ObjectID(), 
+              {_id: id, 
                 code: req.body.code,
                 socauchualam: req.body.socauchualam,
                 socaudung: req.body.socaudung,
@@ -612,7 +613,7 @@ mongoClient.connect(url, (err, db) =>{
                 done: req.body.done}}
           }
           collection.updateOne(query,save, (err, result) =>{
-            res.status(200).send(result)
+            res.status(200).send(id.toString())
           })
         }
         else if (result == null)
@@ -635,8 +636,9 @@ mongoClient.connect(url, (err, db) =>{
                 ]
               }
             }
+            
           collection.insertOne(save, (err, result) =>{
-            res.status(200).send(result)
+            res.status(200).send(id.toString())
           })
         }
         else {
@@ -651,21 +653,48 @@ mongoClient.connect(url, (err, db) =>{
       const collection = myDb.collection('save2')
       const query = {email: req.query.email}
       
-      const count = "c"+req.query.type
       const sub = req.query.sub
       const type = req.query.type
       const mix = `${type}.${sub}`
+      
 
-      collection.findOne(query,{ projection: { _id: 0,[count]:1, [mix]: 1 } },(err,result)=>{
+      collection.findOne(query,{ projection: { _id: 0, [mix]: 1 } },(err,result)=>{
         if( result!=null){
           res.status(200).send(result)
         }
         else if ( result==null){
-          res.status(401).send("Chưa làm bài")
+          res.status(401).send({cod:"401"})
         }
-        else res.status(404).send("lỗi")
+        else res.status(404).send({cod:"404"})
       })
     })
+
+    // app.get('/getnewresult', async(req,res)=>{
+    //   const myDb = db.db('test')
+    //   const collection = myDb.collection('save2')
+    //   const query = {email: req.query.email}
+      
+    //   const sub = req.query.sub
+    //   const type = req.query.type
+    //   const mix = `${type}.${sub}`
+      
+
+    //   //const result = await collection.findOne(query,{ projection: { _id: 0, [mix]: 1 } })
+
+    //   collection.aggregate({$match:{email: req.query.email}},(err,result)=>{
+    //     console.log(result)
+
+    //   if( result!=null){
+    //     res.status(200).send(result)
+    //   }
+    //   else if ( result==null){
+    //     res.status(401).send({cod:"401"})
+    //   }
+    //   else res.status(404).send({cod:"404"})
+    //   })
+
+      
+    // })
 
     app.get('/count', async(req,res)=>{
       const myDb = db.db('test')
@@ -673,13 +702,13 @@ mongoClient.connect(url, (err, db) =>{
       const query = {email: req.query.email}
 
       collection.findOne(query,{ projection: { _id: 0,cexam:1, creview: 1 } },(err,result)=>{
-        if( result!=null){
+        if( result!=null && _.isEmpty(result)){
           res.status(200).send(result)
         }
         else if ( result==null){
-          res.status(401).send("Chưa làm bài")
+          res.status(401).send({cod:"401"})
         }
-        else res.status(404).send("lỗi")
+        else res.status(404).send({cod:"404"})
       })
     })
 
