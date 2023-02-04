@@ -470,29 +470,29 @@ mongoClient.connect(url, (err, db) =>{
     
   })
 
-    app.post('/search', async (req,res)=>{
+    app.get('/search', async (req,res)=>{
       const myDb = db.db('da')
       var collection1, collection2, collection 
            
-      if(req.body.sub=="Eng_exam"||req.body.sub=="Eng_review"||req.body.sub=="Eng")
+      if(req.query.sub=="Eng_exam"||req.query.sub=="Eng_review"||req.query.sub=="Eng")
       {
         collection = myDb.collection('English')   
         collection1 = myDb.collection('Eng_exam')
         collection2 = myDb.collection('Eng_review')
       }
-      else if(req.body.sub=="His_exam"||req.body.sub=="His_review"||req.body.sub=="His")
+      else if(req.query.sub=="His_exam"||req.query.sub=="His_review"||req.query.sub=="His")
       {
         collection = myDb.collection('History')  
         collection1 = myDb.collection('His_exam')
         collection2 = myDb.collection('His_review')
       }
-      else if(req.body.sub=="Geo_exam"||req.body.sub=="Geo_review"||req.body.sub=="Geo")
+      else if(req.query.sub=="Geo_exam"||req.query.sub=="Geo_review"||req.query.sub=="Geo")
       {
         collection = myDb.collection('Geography')  
         collection1 = myDb.collection('Geo_exam')
         collection2 = myDb.collection('Geo_review')
       }
-      else if(req.body.sub=="Gdcd_exam"||req.body.sub=="Gdcd_review"||req.body.sub=="Gdcd")
+      else if(req.query.sub=="Gdcd_exam"||req.query.sub=="Gdcd_review"||req.query.sub=="Gdcd")
       {
         collection = myDb.collection('Gdcd')  
         collection1 = myDb.collection('Gdcd_exam')
@@ -501,11 +501,11 @@ mongoClient.connect(url, (err, db) =>{
 
       var query = {
         "$or":[
-          {Question:{ $regex: '.*' + req.body.search + '.*'}},
-          {a:{ $regex: '.*' + req.body.search + '.*'}},
-          {b:{ $regex: '.*' + req.body.search + '.*'}},
-          {c:{ $regex: '.*' + req.body.search + '.*'}},
-          {d:{ $regex: '.*' + req.body.search + '.*'}},
+          {Question:{ $regex: '.*' + req.query.search + '.*'}},
+          {a:{ $regex: '.*' + req.query.search + '.*'}},
+          {b:{ $regex: '.*' + req.query.search + '.*'}},
+          {c:{ $regex: '.*' + req.query.search + '.*'}},
+          {d:{ $regex: '.*' + req.query.search + '.*'}},
         ]
       }
       collection.find(query).toArray(async function(err,result){
@@ -669,32 +669,32 @@ mongoClient.connect(url, (err, db) =>{
       })
     })
 
-    app.get('/getnewresult', async(req,res)=>{
-      const myDb = db.db('test')
-      const collection = myDb.collection('save2')
-      const query = {email: req.query.email}
+    // app.get('/getnewresult', async(req,res)=>{
+    //   const myDb = db.db('test')
+    //   const collection = myDb.collection('save2')
+    //   const query = {email: req.query.email}
       
-      const sub = req.query.sub
-      const type = req.query.type
-      const mix = `${type}.${sub}`
+    //   const sub = req.query.sub
+    //   const type = req.query.type
+    //   const mix = `${type}.${sub}`
       
 
-      //const result = await collection.findOne(query,{ projection: { _id: 0, [mix]: 1 } })
+    //   //const result = await collection.findOne(query,{ projection: { _id: 0, [mix]: 1 } })
 
-      collection.aggregate({$match:{email: req.query.email}},(err,result)=>{
-        console.log(result)
+    //   // collection.aggregate({$match:{email: req.query.email}},(err,result)=>{
+    //   //   console.log(result)
 
-      if( result!=null){
-        res.status(200).send(result)
-      }
-      else if ( result==null){
-        res.status(401).send({cod:"401"})
-      }
-      else res.status(404).send({cod:"404"})
-      })
+    //   // if( result!=null){
+    //   //   res.status(200).send(result)
+    //   // }
+    //   // else if ( result==null){
+    //   //   res.status(401).send({cod:"401"})
+    //   // }
+    //   // else res.status(404).send({cod:"404"})
+    //   // })
 
       
-    })
+    // })
 
     app.get('/count',(req,res)=>{
       const myDb = db.db('test')
@@ -712,29 +712,29 @@ mongoClient.connect(url, (err, db) =>{
       })
     })
 
-    app.post('/test', async (req,res)=>{
-      const myDb = db.db('test')
-      const collection = myDb.collection('save2')
+    // app.post('/test', async (req,res)=>{
+    //   const myDb = db.db('test')
+    //   const collection = myDb.collection('save2')
 
-      const send = {email: req.body.email}
-      const query = { 
-        $push:{
-          //email: req.body.email,
-          list: 
-              {
-                sub: req.body.sub,
-                time: req.body.time,
-                done: req.body.done
-                }
+    //   const send = {email: req.body.email}
+    //   const query = { 
+    //     $push:{
+    //       //email: req.body.email,
+    //       list: 
+    //           {
+    //             sub: req.body.sub,
+    //             time: req.body.time,
+    //             done: req.body.done
+    //             }
               
-        }
-      }
-      collection.updateOne(send,query, (err, result) =>{
-        res.status(200).send()
-      })
-      // collection.insertOne(query)
-      res.status(200).send(query)
-    })
+    //     }
+    //   }
+    //   collection.updateOne(send,query, (err, result) =>{
+    //     res.status(200).send()
+    //   })
+    //   // collection.insertOne(query)
+    //   res.status(200).send(query)
+    // })
 
   }
 });
